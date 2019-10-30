@@ -31,8 +31,10 @@ public class SourceFile {
         final BufferedReader bufferedReader;
         bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
         try {
-            final String line = bufferedReader.readLine();
-            rows.add(new SourceRow(line));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                rows.add(new SourceRow(line));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
