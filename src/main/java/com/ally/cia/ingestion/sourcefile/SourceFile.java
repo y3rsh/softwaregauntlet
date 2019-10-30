@@ -1,5 +1,7 @@
 package com.ally.cia.ingestion.sourcefile;
 
+import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
+import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributesProvider;
 import com.ally.cia.ingestion.sourcefile.row.SourceRow;
 
 import java.io.BufferedReader;
@@ -10,27 +12,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SourceFile {
-
-    private final BufferedReader bufferedReader;
+    private final List<SourceRow> fileRows = new ArrayList<>();
+    private final IngestionFileAttributes fileSchema;
 
     private SourceFile(Integer jobId) {
-        final String filePath = String.format("/jobNumber%d.txt", jobId);
-        final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
-        bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
+        fileRows.addAll(getFileRows(jobId));
+        fileSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
     }
 
     public static SourceFile getInstance(Integer jobId) {
         return new SourceFile(jobId);
     }
 
-    List<SourceRow> getRows() {
-        List<SourceRow> sourceRows = new ArrayList<>();
+    private List<SourceRow> getFileRows(Integer jobId) {
+        List<SourceRow> rows = new ArrayList<>();
+        final String filePath = String.format("/jobNumber%d.txt", jobId);
+        final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
+        final BufferedReader bufferedReader;
+        bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
         try {
             final String line = bufferedReader.readLine();
-            sourceRows.add(new SourceRow(line));
+            rows.add(new SourceRow(line));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return sourceRows;
+        return rows;
+    }
+
+    public SourceFileCalibrator getCalibrator() {
+        return SourceFileCalibrator.getInstance(fileSchema, fileRows);
     }
 }
