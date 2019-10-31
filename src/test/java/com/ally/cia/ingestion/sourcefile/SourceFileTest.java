@@ -18,13 +18,13 @@ public class SourceFileTest extends GauntletTest {
     public void smoke() {
         int testJobId = 2;
         given(testJobId);
-        SourceFile actualFile = SourceFileProvider.getInstance().get(testJobId);
+        SourceFile actualFile = SourceFileProvider.getInstance().getSourceFileFromClassPath(testJobId);
         then(actualFile.getCalibrator());
     }
 
     @Test(groups = {TestSuite.SPRINT}, dataProvider = "jobIds", dependsOnMethods = "smoke")
     public void specificJob(Integer jobId) {
         given(jobId);
-        then(SourceFile.getInstance(jobId).getCalibrator());
+        then(SourceFileProvider.getInstance().getSourceFileFromClassPath(jobId).getCalibrator());
     }
 }

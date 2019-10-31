@@ -1,6 +1,11 @@
 package com.ally.cia.ingestion.sourcefile;
 
+import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class SourceFileProvider {
     private static SourceFileProvider provider;
@@ -12,8 +17,19 @@ public class SourceFileProvider {
         return provider;
     }
 
-    public SourceFile get(int jobId) {
-        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
-        return SourceFile.getInstance(new File(filePath));
+    private IngestionFileAttributes getIngestionFileAttributes(int jobId) {
+        return IngestionFileAttributes.getInstance(jobId);
     }
+
+    public SourceFile getSourceFileFromClassPath(int jobId) {
+        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
+        final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
+        return SourceFile.getInstance(resourceAsStream, getIngestionFileAttributes(jobId));
+    }
+
+    public SourceFile getSourceFile(int jobId) throws FileNotFoundException {
+        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
+        return SourceFile.getInstance(new FileInputStream(new File(filePath)), getIngestionFileAttributes(jobId));
+    }
+
 }

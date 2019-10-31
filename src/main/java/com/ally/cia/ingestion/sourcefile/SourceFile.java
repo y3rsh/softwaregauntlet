@@ -1,32 +1,33 @@
 package com.ally.cia.ingestion.sourcefile;
 
 import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
-import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributesProvider;
 import com.ally.cia.ingestion.sourcefile.row.SourceRow;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SourceFile {
-    private final List<SourceRow> fileRows = new ArrayList<>();
+    private final InputStream inputStream;
     private final IngestionFileAttributes fileSchema;
+    private final List<SourceRow> fileRows;
 
-    private SourceFile(File jobId) {
-        fileRows.addAll(getFileRows(jobId));
-        fileSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
+    public static SourceFile getInstance(InputStream inputStream, IngestionFileAttributes fileSchema) {
+        return new SourceFile(inputStream, fileSchema);
     }
 
-    public static SourceFile getInstance(File sourceFile) {
-        return new SourceFile(sourceFile);
+    private SourceFile(InputStream inputStream, IngestionFileAttributes fileSchema) {
+        this.inputStream = inputStream;
+        this.fileSchema = fileSchema;
+        this.fileRows = getFileRows();
     }
 
-    private List<SourceRow> getFileRows(Integer jobId) {
+    private List<SourceRow> getFileRows() {
         List<SourceRow> rows = new ArrayList<>();
-        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
-        final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
-        final BufferedReader bufferedReader;
-        bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         try {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
