@@ -4,10 +4,7 @@ import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
 import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributesProvider;
 import com.ally.cia.ingestion.sourcefile.row.SourceRow;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +12,13 @@ public class SourceFile {
     private final List<SourceRow> fileRows = new ArrayList<>();
     private final IngestionFileAttributes fileSchema;
 
-    private SourceFile(Integer jobId) {
+    private SourceFile(File jobId) {
         fileRows.addAll(getFileRows(jobId));
         fileSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
     }
 
-    public static SourceFile getInstance(Integer jobId) {
-        return new SourceFile(jobId);
+    public static SourceFile getInstance(File sourceFile) {
+        return new SourceFile(sourceFile);
     }
 
     private List<SourceRow> getFileRows(Integer jobId) {
