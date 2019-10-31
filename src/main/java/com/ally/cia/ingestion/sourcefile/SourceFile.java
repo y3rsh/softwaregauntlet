@@ -26,7 +26,7 @@ public class SourceFile {
 
     private List<SourceRow> getFileRows(Integer jobId) {
         List<SourceRow> rows = new ArrayList<>();
-        final String filePath = String.format("/jobNumber%d.txt", jobId);
+        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
         final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
         final BufferedReader bufferedReader;
         bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
