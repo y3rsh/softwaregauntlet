@@ -35,14 +35,16 @@ public class Environment {
 
     /**
      * System Property 'env' is used to initialize Environment to resources/[env].properties
+     *
      * @return Environment
      */
     public static Environment getInstance() {
         if (environment == null) {
-            String env = System.getProperty("env");
             InputStream inputStream = null;
+            String env = System.getProperty("env");
+            env = "".equals(env) ? "dev" : env;
             try {
-                inputStream = Environment.class.getClassLoader().getResourceAsStream(String.format("%s.properties", env));
+                inputStream = Environment.class.getClassLoader().getResourceAsStream(String.format("environment/%s.properties", env));
             } catch (Exception e) {
                 LoggerFactory.getLogger(Environment.class).error("System Property 'env' NOT SET (e.g. \"dev\" for a 'dev' environment)");
             }
@@ -52,10 +54,14 @@ public class Environment {
     }
 
     static void clear() {
-        environment=null;
+        environment = null;
     }
 
     public String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    public String getIngestionFilePath() {
+        return getProperty("ingestion_file_path");
     }
 }
