@@ -17,11 +17,7 @@ public class SourceFileProvider {
         return provider;
     }
 
-    private IngestionFileAttributes getIngestionFileAttributes(int jobId) {
-        return IngestionFileAttributes.getInstance(jobId);
-    }
-
-    public SourceFile getSourceFileFromClassPath(int jobId) {
+    public SourceFile get(int jobId) {
         final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
         final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
         return SourceFile.getInstance(resourceAsStream, getIngestionFileAttributes(jobId));
@@ -29,7 +25,11 @@ public class SourceFileProvider {
 
     public SourceFile getSourceFile(int jobId) throws FileNotFoundException {
         final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
-        return SourceFile.getInstance(new FileInputStream(new File(filePath)), getIngestionFileAttributes(jobId));
+        File sourceFile = new File(filePath);
+        return SourceFile.getInstance(new FileInputStream(sourceFile), getIngestionFileAttributes(jobId));
     }
 
+    private IngestionFileAttributes getIngestionFileAttributes(int jobId) {
+        return IngestionFileAttributes.getInstance(jobId);
+    }
 }

@@ -15,17 +15,17 @@ public class SourceFile {
     private final IngestionFileAttributes fileSchema;
     private final List<SourceRow> fileRows;
 
-    public static SourceFile getInstance(InputStream inputStream, IngestionFileAttributes fileSchema) {
-        return new SourceFile(inputStream, fileSchema);
-    }
-
     private SourceFile(InputStream inputStream, IngestionFileAttributes fileSchema) {
         this.inputStream = inputStream;
         this.fileSchema = fileSchema;
         this.fileRows = getFileRows();
     }
 
-    private List<SourceRow> getFileRows() {
+    public static SourceFile getInstance(InputStream inputStream, IngestionFileAttributes fileSchema) {
+        return new SourceFile(inputStream, fileSchema);
+    }
+
+    List<SourceRow> getFileRows() {
         List<SourceRow> rows = new ArrayList<>();
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         try {
@@ -37,9 +37,5 @@ public class SourceFile {
             e.printStackTrace();
         }
         return rows;
-    }
-
-    public SourceFileCalibrator getCalibrator() {
-        return SourceFileCalibrator.getInstance(fileSchema, fileRows);
     }
 }
