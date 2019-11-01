@@ -10,8 +10,10 @@ public class SourceFileCalibrator extends Calibrator {
 
     private SourceFileCalibrator(IngestionFileAttributes expected, SourceFile actual) {
         super(DESCRIPTION, expected, actual);
-        for (SourceRow row : actual.getFileRows()) {
-            addChildCalibrator(SourceRowCalibrator.getInstance(expected, row));
+        if (actual != null) {
+            for (SourceRow row : actual.getRows()) {
+                addChildCalibrator(SourceRowCalibrator.getInstance(expected, row));
+            }
         }
     }
 

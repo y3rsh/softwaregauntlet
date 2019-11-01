@@ -1,11 +1,9 @@
 package com.ally.cia.ingestion.sourcefile;
 
-import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.net.URL;
 
 public class SourceFileProvider {
     private static SourceFileProvider provider;
@@ -18,18 +16,12 @@ public class SourceFileProvider {
     }
 
     public SourceFile get(int jobId) {
-        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
-        final InputStream resourceAsStream = getClass().getResourceAsStream(filePath);
-        return SourceFile.getInstance(resourceAsStream, getIngestionFileAttributes(jobId));
-    }
-
-    public SourceFile getSourceFile(int jobId) throws FileNotFoundException {
-        final String filePath = String.format("/ingestionsource/jobNumber%d.txt", jobId);
-        File sourceFile = new File(filePath);
-        return SourceFile.getInstance(new FileInputStream(sourceFile), getIngestionFileAttributes(jobId));
-    }
-
-    private IngestionFileAttributes getIngestionFileAttributes(int jobId) {
-        return IngestionFileAttributes.getInstance(jobId);
+        final String filePath = String.format("ingestionsource/jobNumber%d.txt", jobId);
+        URL resource = this.getClass().getClassLoader().getResource(filePath);
+        if(resource == null){
+            LoggerFactory.getLogger(this.getClass()).warn(String.format("Resource file %s NOT FOUND", filePath));
+            return null;
+        }
+        return SourceFile.getInstance(new File(resource.getFile()));
     }
 }

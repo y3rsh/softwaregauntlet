@@ -1,41 +1,62 @@
 package com.ally.cia.ingestion.sourcefile;
 
-import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
 import com.ally.cia.ingestion.sourcefile.row.SourceRow;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SourceFile {
-    private final InputStream inputStream;
-    private final IngestionFileAttributes fileSchema;
-    private final List<SourceRow> fileRows;
+    private List<SourceRow> fileRows;
+    private Boolean exists;
 
-    private SourceFile(InputStream inputStream, IngestionFileAttributes fileSchema) {
-        this.inputStream = inputStream;
-        this.fileSchema = fileSchema;
-        this.fileRows = getFileRows();
+    private SourceFile(File sourceFile) {
+        importFileContent(sourceFile);
     }
 
-    public static SourceFile getInstance(InputStream inputStream, IngestionFileAttributes fileSchema) {
-        return new SourceFile(inputStream, fileSchema);
+    public static SourceFile getInstance(File sourceFile) {
+        return new SourceFile(sourceFile);
     }
 
-    List<SourceRow> getFileRows() {
-        List<SourceRow> rows = new ArrayList<>();
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+    private void importFileContent(File sourceFile) {
+        final BufferedReader bufferedReader = getFileReader(sourceFile);
+        exists = bufferedReader != null;
+        fileRows = bufferedReader == null ? new ArrayList<>() : extractRows(bufferedReader);
+    }
+
+    private BufferedReader getFileReader(File sourceFile) {
+        try {
+            FileInputStream stream = new FileInputStream(sourceFile);
+            return new BufferedReader(new InputStreamReader(stream));
+        } catch (Exception e) {
+            String filePathname = sourceFile == null ? "<NULL>" : sourceFile.getAbsolutePath();
+            LoggerFactory.getLogger(this.getClass()).warn(String.format("Unable to read file at %s", filePathname));
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private List<SourceRow> extractRows(BufferedReader bufferedReader) {
+        List<SourceRow> rowsRead = new ArrayList<>();
         try {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                rows.add(new SourceRow(line));
+                rowsRead.add(new SourceRow(line));
             }
         } catch (IOException e) {
+            LoggerFactory.getLogger(this.getClass()).warn("Unable to read line from ingestion source file");
             e.printStackTrace();
         }
-        return rows;
+        return rowsRead;
+
+    }
+
+    List<SourceRow> getRows() {
+        return fileRows;
+    }
+
+    public Boolean exists() {
+        return exists;
     }
 }
