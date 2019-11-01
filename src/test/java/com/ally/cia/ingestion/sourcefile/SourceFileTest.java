@@ -1,6 +1,7 @@
 package com.ally.cia.ingestion.sourcefile;
 
 import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributes;
+import com.ally.cia.ingestion.metadata.fileattributes.IngestionFileAttributesProvider;
 import com.softwareonpurpose.gauntlet.GauntletTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -35,7 +36,7 @@ public class SourceFileTest extends GauntletTest {
 
     private void validateSourceFile(Integer jobId) {
         SourceFile actualFile = SourceFileProvider.getInstance().get(jobId);
-        IngestionFileAttributes actualSchema = IngestionFileAttributes.getInstance(jobId);
+        IngestionFileAttributes actualSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
         given(String.format("Ingestion Job ID #%d", jobId));
         then(SourceFileCalibrator.getInstance(actualSchema, actualFile));
     }

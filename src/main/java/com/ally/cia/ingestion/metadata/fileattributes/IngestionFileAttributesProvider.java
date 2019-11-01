@@ -6,6 +6,6 @@ public class IngestionFileAttributesProvider {
     }
 
     public IngestionFileAttributes get(Integer jobId) {
-        return IngestionFileAttributes.getInstance(jobId);
+        return IngestionFileAttributesRepository.getInstance().query(jobId);
     }
 }
