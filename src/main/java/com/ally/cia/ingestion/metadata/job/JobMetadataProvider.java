@@ -6,6 +6,6 @@ public class JobMetadataProvider {
     }
 
     public JobMetadata get(int jobId) {
-        return JobMetadataRepository.getInstance().get(jobId);
+        return JobMetadataRepository.getInstance().query(jobId);
     }
 }

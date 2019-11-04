@@ -13,7 +13,7 @@ public class JobPropertiesExpected implements JobPropertiesCalibratable {
         if (((Integer) 9).equals(jobMetadata.getId())) {
             stagedProperties = new Properties();
             stagedProperties.put("job_name", "Job number 9");
-            stagedProperties.put("job_type", "REPLACE");
+            stagedProperties.put("job_id", "9");
         }
         properties = stagedProperties;
     }

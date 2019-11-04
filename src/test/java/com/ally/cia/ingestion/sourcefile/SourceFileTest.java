@@ -20,8 +20,7 @@ public class SourceFileTest extends GauntletTest {
     public static Object[][] specificJob_scenarios() {
         return new Object[][]{
                 {9},
-                {27},
-                {68}
+                {27}
         };
     }
 

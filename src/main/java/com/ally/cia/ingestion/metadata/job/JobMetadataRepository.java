@@ -5,7 +5,7 @@ public class JobMetadataRepository {
         return new JobMetadataRepository();
     }
 
-    JobMetadata get(int jobId) {
+    JobMetadata query(int jobId) {
         return JobMetadata.getInstance(jobId);
     }
 }
