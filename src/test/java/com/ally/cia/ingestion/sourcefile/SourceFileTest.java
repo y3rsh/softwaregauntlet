@@ -6,7 +6,7 @@ import com.softwareonpurpose.gauntlet.GauntletTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-@Test(groups = {GauntletTest.Database.METADATA})
+@Test(groups = {GauntletTest.Application.INGESTION})
 public class SourceFileTest extends GauntletTest {
 
     @DataProvider
@@ -20,7 +20,8 @@ public class SourceFileTest extends GauntletTest {
     public static Object[][] specificJob_scenarios() {
         return new Object[][]{
                 {9},
-                {27}
+                {27},
+                {68}
         };
     }
 
@@ -36,8 +37,8 @@ public class SourceFileTest extends GauntletTest {
 
     private void validateSourceFile(Integer jobId) {
         SourceFile actualFile = SourceFileProvider.getInstance().get(jobId);
-        IngestionFileAttributes actualSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
+        IngestionFileAttributes expectedSchema = IngestionFileAttributesProvider.getInstance().get(jobId);
         given(String.format("Ingestion Job ID #%d", jobId));
-        then(SourceFileCalibrator.getInstance(actualSchema, actualFile));
+        then(SourceFileCalibrator.getInstance(expectedSchema, actualFile));
     }
 }

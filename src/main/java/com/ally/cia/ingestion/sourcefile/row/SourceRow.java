@@ -34,4 +34,8 @@ public class SourceRow {
         int index = columnNumber - 1;
         return index < rows.size() ? SourceField.getInstance(rows.get(index)) : null;
     }
+
+    int getFieldCount() {
+        return rows.size();
+    }
 }

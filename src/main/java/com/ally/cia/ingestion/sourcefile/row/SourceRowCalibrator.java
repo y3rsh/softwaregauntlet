@@ -29,5 +29,6 @@ public class SourceRowCalibrator extends Calibrator {
             boolean actual = field != null && field.isTransformable(fieldType);
             verify(String.format("Is Column %d '%s' transformable to %s", columnNumber, fieldValue, fieldType), true, actual);
         }
+        verify("Field Count", columnNumber, actual.getFieldCount());
     }
 }

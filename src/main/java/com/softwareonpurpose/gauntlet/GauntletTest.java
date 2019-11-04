@@ -164,7 +164,8 @@ public abstract class GauntletTest {
      * Names of Applications under test
      */
     @SuppressWarnings("unused")
-    public class Application {
+    public static class Application {
+        public static final String INGESTION = "ingestion";
 
         //  public final static String APPLICATION_NAME = "[application name]";
     }
@@ -173,7 +174,7 @@ public abstract class GauntletTest {
      * Names of Views from applications under test
      */
     @SuppressWarnings("unused")
-    public class View {
+    public static class View {
 
         //  public final static String VIEW_NAME = "[view name]";
     }
@@ -182,9 +183,7 @@ public abstract class GauntletTest {
      * Names of Databases supporting applications under test
      */
     @SuppressWarnings("unused")
-    public class Database {
-        public static final String METADATA = "metadata";
-
+    public static class Database {
         //  public final static String DATABASE_NAME = "[database name]";
     }
 }
